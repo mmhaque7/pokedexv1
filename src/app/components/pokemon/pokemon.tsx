@@ -1,32 +1,48 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
-import { Button } from "@nextui-org/react"
-
+import React, { useState, useEffect } from "react";
+import { Button } from "@nextui-org/react";
+import PokemonCard from "./pokemonCard"
+import { div } from "framer-motion/client";
 export default function pokemon() {
-  const [pokemon, setPokemon] = useState<{ name: string }[]>([])
-  const [currentPgURL, setcurrentPgURL] = useState(
+  const [pokemon, setPokemon] = useState<{ url: string; name: string }[]>([]);
+  const [currentPgURL, setCurrentPgURL] = useState(
     "https://pokeapi.co/api/v2/pokemon?limit=24"
-  )
-  const [nextPgURL, setnextPgURL] = useState("")
-  const [prevPgURL, setprevPgURL] = useState("")
-  const [Loading, setLoading] = useState(true)
+  );
+  const [nextPgURL, setNextPgURL] = useState<string | null>("");
+  const [prevPgURL, setPrevPgURL] = useState<string | null>("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     async function getPokemon() {
-      const response = await fetch(currentPgURL)
-      const data = await response.json()
-
-      setPokemon(data.results)
-      setnextPgURL(data.next)
-      setprevPgURL(data.previous)
-      setLoading(false)
+      try {
+        const response = await fetch(currentPgURL);
+        const data = await response.json();
+        setPokemon(data.results);
+        setNextPgURL(data.next);
+        setPrevPgURL(data.previous);
+      } catch (error) {
+        console.error("Error fetching Pokémon:", error);
+      } finally {
+        setLoading(false);
+      }
     }
-    getPokemon()
-  }, [currentPgURL])
+    getPokemon();
+  }, [currentPgURL]);
+const nextPage = () => {
+  if (nextPgURL !== null) {
+    setCurrentPgURL(nextPgURL)
+  }
+}
 
-  if (Loading)
+const prevPage = () => {
+  if (prevPgURL !== null) {
+    setCurrentPgURL(prevPgURL)
+  }
+}
+
+  if (loading)
     return (
       <div role="status">
         <svg
@@ -49,34 +65,31 @@ export default function pokemon() {
       </div>
     )
 
-  function nextPage() {
-    setcurrentPgURL(nextPgURL)
-  }
-  function prevPage() {
-    setcurrentPgURL(prevPgURL)
-  }
 
   function Capitalize(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1)
   }
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      {pokemon.map((pokemon, index) => {
-        return (
-          <div key={index}>
-            <p>{Capitalize(pokemon.name)}</p>
-          </div>
-        )
-      })}
-      <div className="flex gap-4">
-        <Button color="secondary" onPress={prevPage}>
-          Previous Page
-        </Button>
-        <Button color="secondary" onPress={nextPage}>
-          Next Page
-        </Button>
-      </div>
-    </div>
+<div className="flex flex-col items-center justify-center">
+  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    {pokemon.map((pokemon, index) => (
+      <PokemonCard
+        key={index}
+        pokemonName={Capitalize(pokemon.name)}
+        imgName={pokemon.name}
+        url={pokemon.url}
+      />
+    ))}
+  </div>
+  <div className="flex gap-4 mt-4">
+    <Button color="secondary" onPress={prevPage} disabled={!prevPgURL}>
+      Previous Page
+    </Button>
+    <Button color="secondary" onPress={nextPage} disabled={!nextPgURL}>
+      Next Page
+    </Button>
+  </div>
+</div>
   )
 }
