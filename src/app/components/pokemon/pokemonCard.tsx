@@ -42,7 +42,7 @@ export default function PokemonCard(props: PokemonCardProps) {
         <CardBody className="px-3 py-0 text-small text-default-400 pb-4">
           <p>
             This is the description area of the card. You can add more details
-            about the card's content here.
+            about the card&apos;s content here.
           </p>
         </CardBody>
       </Card>
