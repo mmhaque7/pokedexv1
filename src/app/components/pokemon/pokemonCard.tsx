@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, ComponentProps } from "react"
+import React, { useState, useEffect, } from "react"
 import { Card, CardHeader, CardBody, Avatar } from "@nextui-org/react"
 import { MoreVertical } from "lucide-react"
 import PokemonCardProps from "./pokemonCard.interfaces"
