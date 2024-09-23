@@ -7,19 +7,18 @@ import PokemonCardProps from "./pokemonCard.interfaces"
 
 export default function PokemonCard(props: PokemonCardProps) {
   const [pokemonName, setPokemonName] = useState<string>("")
-  const [url, setUrl] = useState<string>("")
+ 
   const [pokemonIndex, setPokemonIndex] = useState<string>("0")
   const [imgUrl, setImgUrl] = useState("")
-  const [imgName, setImgName] = useState<string>("")
+  
 
   useEffect(() => {
     setPokemonName(props.pokemonName)
-    setUrl(props.url)
     const pokemonIndex = props.url.split("/")[6]
     setPokemonIndex(pokemonIndex)
 
     const imgName = props.imgName
-    setImgName(imgName)
+    
     setImgUrl(`https://img.pokemondb.net/sprites/bank/normal/${imgName}.png`)
   }, [props.pokemonName, props.url, props.imgName])
 
